@@ -107,9 +107,10 @@ const showChart = () => {
     setInterval(async () => {
         if (controller.now_mode()) {
             try {
-                const res = await axios.get("http://127.0.0.1:8000/" + props.dataURL);
+                const res = await axios.get("http://127.0.0.1:8000/register/" + props.dataURL);
                 experiment.push_result(props.title, Number(res.data))
                 targetChart.series[0].setData([Number(res.data)], true);
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -119,7 +120,7 @@ const showChart = () => {
             experiment.clear_result()
             targetChart.series[0].setData([0], true, true);
         }
-    }, 1000);
+    }, 1500);
 };
 
 onMounted(() => {

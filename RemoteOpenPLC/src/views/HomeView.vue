@@ -1,5 +1,5 @@
 <template>
-    <div id="str-title"> Remote OpenPLC </div>
+    <div id="str-title"> Remote OpenPLC：了 </div>
     <div id="contens-center">
         <HomeButton name="Setting" path='../../public/setting.svg' next="set"></HomeButton>
         <HomeButton name="Run OpenPLC" path='../../public/running.svg' next="run"></HomeButton>
