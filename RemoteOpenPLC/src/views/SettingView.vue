@@ -6,7 +6,7 @@
         <h1>表示するデータを入力してください</h1>
         <div v-for="(form, index) in forms" :key="index" class="form-replication_target">
             <p>データ名：<input type="text" v-model="form.TITLE" name="TITLE"></p>
-            <p>URL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：<input type="text" v-model="form.URL" name="URL"></p>
+            <p>register&nbsp;：<input type="text" v-model="form.URL" name="URL"></p>
             <p>最大値　：<input type="number" v-model="form.MAX" name="MAX"></p>
             <p>最小値　：<input type="number" v-model="form.MIN" name="MIN"></p>
             <p>単位　　：<input type="text" v-model="form.UNIT" name="UNIT"></p>

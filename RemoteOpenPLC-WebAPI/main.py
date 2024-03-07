@@ -3,6 +3,9 @@ os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 
 import cv2
 import random
+import time
+from serial.tools import list_ports
+from pymodbus.client import ModbusSerialClient as ModbusClient
 from starlette.middleware.cors import CORSMiddleware 
 from fastapi.responses import StreamingResponse
 from fastapi import FastAPI
@@ -51,7 +54,89 @@ def generate_video(id = 0):
                b'Content-Type: image/jpeg\r\n\r\n' + byte_frame + b'\r\n\r\n')
     capture.release()
 
+"""
+関数名：get_register_value
+引数　：数字
+返り値：レジスターの値
+説明　：指定したレジスターの値の取得
+"""
+@app.get("/register/{num}")
+def get_register_value(num:int = 0):
+    # ポート番号の自動取得
+    device_port = []
+    check_list = ["Arduino", "Raspberry", "ESP32"]
+    for info in list_ports.comports():
+        for item in check_list:
+            if item in info.description:
+                device_port.append(info.device)
 
+    # modbus通信の用意
+    client = ModbusClient(method = "rtu", port=device_port[0], baudrate= 115200, timeout=0.1)
+    client.connect()
+    time.sleep(1.6)
+
+    # registerの状態確認
+    rr = client.read_holding_registers(address=0, count=20, slave=1)
+
+    client.close()
+    return rr.registers[num]
+
+"""
+関数名：start_coil
+引数　：
+返り値：メッセージ
+説明　：実験を開始するためにcoilをTrueにする
+"""
+@app.get("/start_coil")
+def start_coil():
+    # ポート番号の自動取得
+    device_port = []
+    check_list = ["Arduino", "Raspberry", "ESP32"]
+    for info in list_ports.comports():
+        for item in check_list:
+            if item in info.description:
+                device_port.append(info.device)
+
+    # modbus通信の用意
+    client = ModbusClient(method = "rtu", port=device_port[0], baudrate= 115200, timeout=0.1)
+    client.connect()
+    time.sleep(1.6)
+
+    # coilのT
+    rr = client.write_coils(address=3, values=1, slave=1)
+
+    client.close()
+    return "Correct"
+
+"""
+関数名：stop_coil
+引数　：
+返り値：メッセージ
+説明　：実験を開始するためにcoilをFalseにする
+"""
+@app.get("/stop_coil")
+def stop_coil():
+    # ポート番号の自動取得
+    device_port = []
+    check_list = ["Arduino", "Raspberry", "ESP32"]
+    for info in list_ports.comports():
+        for item in check_list:
+            if item in info.description:
+                device_port.append(info.device)
+
+    # modbus通信の用意
+    client = ModbusClient(method = "rtu", port=device_port[0], baudrate= 115200, timeout=0.1)
+    client.connect()
+    time.sleep(1.6)
+
+    # coilのF
+    rr = client.write_coils(address=3, values=0, slave=1)
+
+    client.close()
+    return "Correct"
+
+
+"""
 # This is test URLs (OpenPLC API).
 @app.get("/led")
 def get_random_number():
@@ -62,3 +147,4 @@ def get_random_number():
 def get_random_number():
     random_value = random.randint(-10, 10)
     return {random_value}
+"""

@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import axios from 'axios';
 
 // export const useCounterStore = defineStore('counter', () => {
 //     const count = ref(0)
@@ -48,11 +49,15 @@ export const result_experiment = defineStore('result', () => {
 export const control_experiment = defineStore('control_experiment', () => {
     const mode = ref(false)
 
-    function start_experiment() {
+    async function start_experiment() {
+        const res = await axios.get("http://127.0.0.1:8000/start_coil/" );
+        alert(res.data)
         mode.value = true
     }
 
-    function stop_experiment() {
+    async function stop_experiment() {
+        const res = await axios.get("http://127.0.0.1:8000/stop_coil/");
+        alert(res.data)
         mode.value = false
     }
 
